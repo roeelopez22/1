@@ -27,13 +27,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Verify VS Files
-        run: |
-          echo "Checking VS files..."
-          if [ ! -d "Project0" ]; then
-            echo "Error: Project0 directory not found!"
-            exit 1
-          fi
+      - name: Download Pipeline Tools
+        uses: actions/download-artifact@v4
+        with:
+          name: pipeline-tools
+          path: .github/workflows/
+
+      - name: Run VS Files Verification
+        run: node .github/workflows/verify-vs-files.js
 
   verify-excluded-files:
     needs: build-pipeline-tools
@@ -42,10 +43,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Verify Excluded Files
-        run: |
-          echo "Checking excluded files..."
-          if [ -d "Project0/x64" ] || [ -d "Project0/.vs" ]; then
-            echo "Error: Prohibited VS artifacts found!"
-            exit 1
-          fi
+      - name: Download Pipeline Tools
+        uses: actions/download-artifact@v4
+        with:
+          name: pipeline-tools
+          path: .github/workflows/
+
+      - name: Run Excluded Files Verification
+        run: node .github/workflows/verify-excluded-files.js
